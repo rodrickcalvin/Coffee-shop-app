@@ -38,7 +38,7 @@ def get_drinks():
     return jsonify({
         'success': True,
         'drinks': drinks_summary
-    }),200
+    }), 200
 
 
 @app.route('/drinks-detail')
@@ -124,7 +124,6 @@ def update_drink(paylaod, id):
 
         if updated_recipe:
             drink.recipe = json.dumps(updated_recipe)
-
 
         drink.update()
 

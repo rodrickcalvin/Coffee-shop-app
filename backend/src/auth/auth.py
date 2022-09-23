@@ -6,8 +6,6 @@ from urllib.request import urlopen
 from os import environ
 
 
-
-
 # AuthError Exception
 '''
 AuthError Exception
@@ -99,7 +97,9 @@ def verify_decode_jwt(token):
         and return the decoded payload
     '''
 
-    json_url = urlopen(f'https://{environ["AUTH0_DOMAIN"]}/.well-known/jwks.json')
+    json_url = urlopen(
+        f'https://{environ["AUTH0_DOMAIN"]}/.well-known/jwks.json'
+    )
     jwks = json.loads(json_url.read())
     unverified_header = jwt.get_unverified_header(token)
     rsa_key = {}
