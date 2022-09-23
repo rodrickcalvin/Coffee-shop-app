@@ -3,7 +3,11 @@ from flask import request, _request_ctx_stack, abort
 from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
-from os import environ
+
+
+AUTH0_DOMAIN = 'ui-integrated.eu.auth0.com'
+ALGORITHMS = ['RS256']
+API_AUDIENCE = 'http://127.0.0.1:5000'
 
 
 # AuthError Exception
@@ -105,7 +109,7 @@ def verify_decode_jwt(token):
     '''
 
     json_url = urlopen(
-        f'https://{environ["AUTH0_DOMAIN"]}/.well-known/jwks.json'
+        f'https://{AUTH0_DOMAIN}/.well-known/jwks.json'
     )
     jwks = json.loads(json_url.read())
     unverified_header = jwt.get_unverified_header(token)
@@ -131,9 +135,9 @@ def verify_decode_jwt(token):
             payload = jwt.decode(
                 token,
                 rsa_key,
-                algorithms=environ["ALGORITHMS"],
-                audience=environ["API_AUDIENCE"],
-                issuer='https://' + environ["AUTH0_DOMAIN"] + '/'
+                algorithms=ALGORITHMS,
+                audience=API_AUDIENCE,
+                issuer='https://' + AUTH0_DOMAIN + '/'
             )
 
             return payload
