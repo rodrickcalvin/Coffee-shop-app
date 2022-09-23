@@ -7,6 +7,7 @@ from flask_cors import CORS
 from .database.models import db_drop_and_create_all, setup_db, Drink
 from .auth.auth import AuthError, requires_auth
 
+# create and configure the app
 app = Flask(__name__)
 setup_db(app)
 CORS(app)
@@ -32,7 +33,10 @@ def get_drinks():
         or appropriate status code indicating reason for failure
     '''
 
+    # Fetch all drinks from the db
     drinks = Drink.query.all()
+
+    # Loop through all the items and make them summarized
     drinks_summary = [drink.short() for drink in drinks]
 
     return jsonify({
@@ -52,8 +56,10 @@ def get_drinks_detail(payload):
         where drinks is the list of drinks or appropriate status code
         indicating reason for failure
     '''
-
+    # Fetch all drinks from the db
     drinks = Drink.query.all()
+
+    # Loop through all the items and retrieve their details
     drinks_details = [drink.long() for drink in drinks]
 
     return jsonify({
@@ -78,10 +84,19 @@ def create_drink(payload):
     body = request.get_json()
 
     try:
-        title = body.get('title', None)
-        recipe = body.get('recipe', None)
+        # Create new drink
+        new_title = body.get('title', None)
+        new_recipe = body.get('recipe', None)
 
-        new_drink = Drink(title=title, recipe=json.dumps(recipe))
+        # Abort if tile or recipe are missing
+        if (
+            new_title is None or
+            new_recipe is None
+        ):
+            abort(422)
+
+        # Create instance of Drink model
+        new_drink = Drink(title=new_title, recipe=json.dumps(new_recipe))
         new_drink.insert()
 
         return jsonify({
@@ -111,20 +126,25 @@ def update_drink(paylaod, id):
     body = request.get_json()
 
     try:
+        # Recieve the updated columns of Drink model
         updated_title = body.get('title', None)
         updated_recipe = body.get('recipe', None)
 
+        # Get specific Drink by ID
         drink = Drink.query.filter(Drink.id == id).one_or_none()
 
+        # Abort if specific drink doesn't exist
         if drink is None:
             abort(404)
 
+        # Check if the user has updated the values
         if updated_title:
             drink.title = updated_title
 
         if updated_recipe:
             drink.recipe = json.dumps(updated_recipe)
 
+        # Alter the db
         drink.update()
 
         return jsonify({
@@ -151,11 +171,14 @@ def delete_drink(payload, id):
     '''
 
     try:
+        # Get specific Drink by ID
         drink = Drink.query.filter(Drink.id == id).one_or_none()
 
+        # # Abort if specific drink doesn't exist
         if drink is None:
             abort(404)
 
+        # delete specific drink from the db
         drink.delete()
 
         return jsonify({

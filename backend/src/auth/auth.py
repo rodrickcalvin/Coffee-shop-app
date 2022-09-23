@@ -38,17 +38,20 @@ def get_token_auth_header():
 
     # split the bearer and the token:
     header_parts = auth.split()
+    # check for the word "Bearer" just to make sure it is indeed a bearer token
     if header_parts[0].lower() != 'bearer':
         raise AuthError({
             'code': 'invalid_header',
             'description': 'Authorization header must start with "Bearer".'
         }, 401)
 
+    # check if the header has less than two parts once it is split
     elif len(header_parts) == 1:
         raise AuthError({
             'code': 'invalid_header',
             'description': 'Token not found.'
         }, 401)
+    # check if header is more than 2 parts
     elif len(header_parts) > 2:
         raise AuthError({
             'code': 'invalid_header',
@@ -70,12 +73,16 @@ def check_permissions(permission, payload):
     payload permissions array
     - return true otherwise
     '''
+
+    # check if there is a permissions 🗝️key in payload from the frontend
     if 'permissions' not in payload:
         raise AuthError({
             'code': 'invalid_claims',
             'description': 'Permissions not included in JWT.'
         }, 400)
 
+    # check if the permission attached to the permissions key
+    # is among the known app permissions
     if permission not in payload['permissions']:
         raise AuthError({
             'code': 'unauthorized',
