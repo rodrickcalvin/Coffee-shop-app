@@ -15,8 +15,18 @@ This project depends on Nodejs and Node Package Manager (NPM). Before continuing
 The Ionic Command Line Interface is required to serve and build the frontend. Instructions for installing the CLI is in the [Ionic Framework Docs](https://ionicframework.com/docs/installation/cli).
 
 #### Installing project dependencies
-
 This project uses NPM to manage software dependencies. NPM Relies on the package.json file located in the `frontend` directory of this repository. After cloning, open your terminal and run:
+
+```bash
+cd frontend
+```
+Once in the `Frontend` directory, make sure you check which version of `node` you are running:
+
+```bash
+node --version
+```
+> _tip_: Make sure to have the LTS version running just to be on a safe side.
+
 
 ```bash
 npm install
